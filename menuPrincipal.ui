@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>549</width>
+    <height>496</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(6, 75, 5);</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QProgressBar" name="progressBar">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>160</y>
+      <width>441</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>0</number>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>549</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuCadastro">
+    <property name="title">
+     <string>Cadastro</string>
+    </property>
+    <widget class="QMenu" name="menuProdutos">
+     <property name="title">
+      <string>Produtos</string>
+     </property>
+     <addaction name="actionListProd"/>
+     <addaction name="separator"/>
+     <addaction name="actionCadastrar"/>
+     <addaction name="actionEditProd"/>
+     <addaction name="actionGeraPdf"/>
+     <addaction name="separator"/>
+     <addaction name="separator"/>
+    </widget>
+    <addaction name="menuProdutos"/>
+   </widget>
+   <widget class="QMenu" name="menuCaixa">
+    <property name="title">
+     <string>Caixa</string>
+    </property>
+    <widget class="QMenu" name="menuControle_de_Caixa">
+     <property name="title">
+      <string>Controle de Caixa</string>
+     </property>
+     <addaction name="actioncaixa"/>
+    </widget>
+    <addaction name="menuControle_de_Caixa"/>
+   </widget>
+   <addaction name="menuCadastro"/>
+   <addaction name="menuCaixa"/>
+  </widget>
+  <action name="actionListProd">
+   <property name="text">
+    <string>Listar Produtos</string>
+   </property>
+  </action>
+  <action name="actionCadastrar">
+   <property name="text">
+    <string>Cadastrar</string>
+   </property>
+  </action>
+  <action name="actionEditProd">
+   <property name="text">
+    <string>Editar Produtos</string>
+   </property>
+  </action>
+  <action name="actionGeraPdf">
+   <property name="text">
+    <string>Gerar PDF</string>
+   </property>
+  </action>
+  <action name="actioncaixa">
+   <property name="text">
+    <string>caixa</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
