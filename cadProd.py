@@ -1,5 +1,8 @@
 from PyQt5 import uic, QtWidgets
+from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
 from PyQt5.QtWidgets import QMessageBox
+
+from datetime import date, datetime
 
 import conexao
 
@@ -114,59 +117,70 @@ def mostracadprod():
     formulario.show()
 
 
+def GerarPedido():
+    cursor = conexao.banco.cursor()
+    comando_SQL = "SELECT codigo FROM pedidos"
+    cursor.execute(comando_SQL)
+    dados_lidos = cursor.fetchall()
+    cont = 0
+
+    for i in range(len(dados_lidos)):
+        if dados_lidos[i][1] == cont:
+            print(cont)
+        else:
+            cont += 1
+            print(cont)
+
+
 def selecionaProduto():
     formulario_caixa.show()
+
+    # DATA DO PEDIDO
+    d = QDate.currentDate()
+    dataAtual = d.toString(Qt.ISODate)
+    data = str(dataAtual)
+    formulario_caixa.dtEdit.setText(data)
     formulario_caixa.comboBox.addItems(["Pedido", "Balcão", "Orçamento"])
 
 
 def insereItem():
-
-    # Busca no banco de dados por todos os produtos
-    # salva na variavel dados_lidos
     cursor = conexao.banco.cursor()
     comando_SQL = "SELECT * FROM produtos"
     cursor.execute(comando_SQL)
     dados_lidos = cursor.fetchall()
 
+    itens_pedido = {}
+    for i in range(len(dados_lidos)):
+        if formulario_caixa.ProdutoItem.text() == dados_lidos[i][2]:
+            itens_pedido["item"] = (dados_lidos[i][2])
+            itens_pedido["preco"] = (dados_lidos[i][3])
 
-    cont = 0
-    l = 0
-    itens_cadastrados = []
-    produto = {}
+    item = [item for item in itens_pedido.values()]
+    formulario_caixa.tblw.setRowCount(len(dados_lidos))
+    formulario_caixa.tblw.setColumnCount(4)
+    formulario_caixa.ProdutoItem.setText("")
 
-    # Estou lendo de tras para frente os dados_lidos
-    # e armazenando em uma lista, isso torna possível
-    # ler a lista posteriormete
-    # com um contador l eu consigo manster o ponteiro
-    #  apontado para um unica linha ate ler o nome do item
-    while cont <= (len(dados_lidos) - 1):
-        itens_cadastrados.append(dados_lidos[l][2])
-        l += 1
-        cont += 1
+    for i in range(1):
+        for j in range(0, 1):
+            formulario_caixa.tblw.setItem(i, j, QtWidgets.QTableWidgetItem(str(item[0])))
+            formulario_caixa.tblw.setItem(i, j + 2, QtWidgets.QTableWidgetItem(str(item[1])))
 
-    # Comparo o que foi digitado no lineEdit com cada item
-    # da minha lista itens_cadastrado e salvo em um dicionário
-    # desta form eu posso manipular chave e valor de cada item
-    for idex_produto_cadastrados in itens_cadastrados:
-        if formulario_caixa.ProdutoItem.text() == idex_produto_cadastrados:
-            # armazenado o item
-            produto["item"] = idex_produto_cadastrados
-            print(idex_produto_cadastrados)
 
-            # armazenando o preço
-            for i in range(len(dados_lidos)):
-                if dados_lidos[i][2] == idex_produto_cadastrados:
-                    produto["preço"] = dados_lidos[i][3]
-                    print(dados_lidos[i][3])
+def preparaItem():
+    cursor = conexao.banco.cursor()
+    comando_SQL = "SELECT * FROM produtos"
+    cursor.execute(comando_SQL)
+    dados_lidos = cursor.fetchall()
 
-            # pego os itens do meu dicionario
-            # e insere o valor de cada chave listWedget
-            for k, v in produto.items():
-                prod = str(v)
-                formulario_caixa.lwItens.addItem(prod)
+    itens_pedido = {}
+    item = []
+    for i in range(len(dados_lidos)):
+        if formulario_caixa.ProdutoItem.text() == dados_lidos[i][2]:
+            itens_pedido["item"] = (dados_lidos[i][2])
+            itens_pedido["preco"] = (dados_lidos[i][3])
 
-                print(prod)
-
+            item.append(itens_pedido)
+    return item
 
 
 def cadastroProduto():
@@ -239,6 +253,7 @@ formulario_listprod.btnDel.clicked.connect(excluir_dados)
 formulario_listprod.btnEditar.clicked.connect(edit_dados)
 formulario_editprod.btnSalvarEdit.clicked.connect(salvar)
 formulario_caixa.btnInsere.clicked.connect(insereItem)
+formulario_caixa.btngerar.clicked.connect(preparaItem)
 
 menu.show()
 menu.progressBar.hide()

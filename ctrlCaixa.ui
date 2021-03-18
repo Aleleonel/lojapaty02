@@ -198,7 +198,7 @@
      <string>Tipo Oper.</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="btngerar">
     <property name="geometry">
      <rect>
       <x>120</x>
