@@ -135,12 +135,26 @@ def GerarPedido():
 def selecionaProduto():
     formulario_caixa.show()
 
+    cursor = conexao.banco.cursor()
+    comando_SQL = "SELECT * FROM tipo_operacao"
+    cursor.execute(comando_SQL)
+    dados_lidos = cursor.fetchall()
+
+    combo = [numero for numero in dados_lidos]
+    print(combo)
+
+    for c in range(len(combo)):
+        formulario_caixa.comboBox.addItems([combo[c][1]])
+
+    # formulario_caixa.comboBox2.activated.connect(insereItem)
+
     # DATA DO PEDIDO
     d = QDate.currentDate()
     dataAtual = d.toString(Qt.ISODate)
     data = str(dataAtual)
     formulario_caixa.dtEdit.setText(data)
-    formulario_caixa.comboBox.addItems(["Pedido", "Balcão", "Orçamento"])
+    # formulario_caixa.comboBox.addItems(["Pedido", "Balcão", "Orçamento"])
+    # formulario_caixa.comboBox.addItems([combo[0][2]])
 
 
 def insereItem():
@@ -149,24 +163,33 @@ def insereItem():
     cursor.execute(comando_SQL)
     dados_lidos = cursor.fetchall()
 
-    itens_pedido = {}
-    for i in range(len(dados_lidos)):
-        if formulario_caixa.ProdutoItem.text() == dados_lidos[i][2]:
-            itens_pedido["item"] = (dados_lidos[i][2])
-            itens_pedido["preco"] = (dados_lidos[i][3])
+    itens = preparaItem()
+    item = [item for item in itens]
 
-    item = [item for item in itens_pedido.values()]
-    formulario_caixa.tblw.setRowCount(len(dados_lidos))
-    formulario_caixa.tblw.setColumnCount(4)
-    formulario_caixa.ProdutoItem.setText("")
+    print(item)
 
-    for i in range(1):
-        for j in range(0, 1):
-            formulario_caixa.tblw.setItem(i, j, QtWidgets.QTableWidgetItem(str(item[0])))
-            formulario_caixa.tblw.setItem(i, j + 2, QtWidgets.QTableWidgetItem(str(item[1])))
+    # for i in range(len(dados_lidos)):
+    #     if formulario_caixa.ProdutoItem.text() == dados_lidos[i][2]:
+    #         itens_pedido["item"] = (dados_lidos[i][2])
+    #         itens_pedido["preco"] = (dados_lidos[i][3])
+    #
+    #
+    # formulario_caixa.tblw.setRowCount(len(dados_lidos))
+    # formulario_caixa.tblw.setColumnCount(4)
+    # formulario_caixa.ProdutoItem.setText("")
+    #
+    # for i in range(1):
+    #     for j in range(0, 1):
+    #         formulario_caixa.tblw.setItem(i, j, QtWidgets.QTableWidgetItem(str(item[0])))
+    #         formulario_caixa.tblw.setItem(i, j + 2, QtWidgets.QTableWidgetItem(str(item[1])))
 
 
 def preparaItem():
+    """
+    Essa função armazena os itens digidados e
+    guarda em uma dicionario dentro de uma lista
+    :return:
+    """
     cursor = conexao.banco.cursor()
     comando_SQL = "SELECT * FROM produtos"
     cursor.execute(comando_SQL)
