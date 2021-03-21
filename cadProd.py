@@ -132,59 +132,51 @@ def GerarPedido():
             print(cont)
 
 
-def selecionaProduto():
+def abrePedidoCaixa():
+    """
+    Abre o layout Pedido, escolhe o tipo de operação
+    Insere data atual no pedido caixa
+    :return:
+    """
+    # Mostra o layout
     formulario_caixa.show()
 
+    # Lẽ a tapebela de tipo de operação
     cursor = conexao.banco.cursor()
     comando_SQL = "SELECT * FROM tipo_operacao"
     cursor.execute(comando_SQL)
     dados_lidos = cursor.fetchall()
 
-    combo = [numero for numero in dados_lidos]
-    print(combo)
-
+    # Mostra as operações na ComboBox
+    combo = [operacao for operacao in dados_lidos]
     for c in range(len(combo)):
         formulario_caixa.comboBox.addItems([combo[c][1]])
 
-    # formulario_caixa.comboBox2.activated.connect(insereItem)
+    # Chama a função que Tipo de Operação
+    formulario_caixa.comboBox.activated.connect(tipoOperacao)
 
     # DATA DO PEDIDO
     d = QDate.currentDate()
     dataAtual = d.toString(Qt.ISODate)
     data = str(dataAtual)
     formulario_caixa.dtEdit.setText(data)
-    # formulario_caixa.comboBox.addItems(["Pedido", "Balcão", "Orçamento"])
-    # formulario_caixa.comboBox.addItems([combo[0][2]])
 
 
-def insereItem():
-    cursor = conexao.banco.cursor()
-    comando_SQL = "SELECT * FROM produtos"
-    cursor.execute(comando_SQL)
-    dados_lidos = cursor.fetchall()
-
-    itens = preparaItem()
-    item = [item for item in itens]
-
-    print(item)
-
-    # for i in range(len(dados_lidos)):
-    #     if formulario_caixa.ProdutoItem.text() == dados_lidos[i][2]:
-    #         itens_pedido["item"] = (dados_lidos[i][2])
-    #         itens_pedido["preco"] = (dados_lidos[i][3])
-    #
-    #
-    # formulario_caixa.tblw.setRowCount(len(dados_lidos))
-    # formulario_caixa.tblw.setColumnCount(4)
-    # formulario_caixa.ProdutoItem.setText("")
-    #
-    # for i in range(1):
-    #     for j in range(0, 1):
-    #         formulario_caixa.tblw.setItem(i, j, QtWidgets.QTableWidgetItem(str(item[0])))
-    #         formulario_caixa.tblw.setItem(i, j + 2, QtWidgets.QTableWidgetItem(str(item[1])))
+# Chamada pela função abrePedidoCaixa
+def tipoOperacao(index):
+    """
+    Aqui vai ser devinido uma tabela temporaria
+    que conterá os dados do pedido antes de serem
+    salvos na tabela pedidos
+    :param index:
+    :return:
+    """
+    f = (formulario_caixa.comboBox.itemText(index))
+    if f == 'ORÇAMENTO':
+        print('orçamento')
 
 
-def preparaItem():
+def digitaItens():
     """
     Essa função armazena os itens digidados e
     guarda em uma dicionario dentro de uma lista
@@ -201,9 +193,51 @@ def preparaItem():
         if formulario_caixa.ProdutoItem.text() == dados_lidos[i][2]:
             itens_pedido["item"] = (dados_lidos[i][2])
             itens_pedido["preco"] = (dados_lidos[i][3])
-
+            itens_pedido["codigo"] = 20210001
             item.append(itens_pedido)
-    return item
+
+    # Criar aqui uma tabela temporaria ou inserir diretamente na tabela de pedidos
+    # para depois mostrar na tela os dados inseridos
+    # Uma tabela temporaria deve ser a melhor escolha porque acredito que seja mais
+    # interessante fazer aterações fora da tabela principal
+    codigo = itens_pedido["codigo"] = 20210001
+
+    cursor = conexao.banco.cursor()
+    comando_SQL = "INSERT INTO pedidos (codigo, item, quantidade,preco, sub_total, Total, data, id_operacao)" \
+                  "values (%s, %s, %s, %s, %s, %s, %s, %s)"
+    dados = (int(codigo), str(dados_lidos[i][2]), 12, str(dados_lidos[i][3]), 430.80, 430.80, 20-3-2021, 1)
+    cursor.execute(comando_SQL, dados)
+    conexao.banco.commit()
+
+    return itens_pedido
+
+
+def insereItem():
+    global desc_item, desc_preco
+    itens = digitaItens()
+
+    print(itens)
+    # item = dict(item for item in itens)
+    for k in itens.values():
+        desc_item = itens["item"]
+        desc_preco= itens["preco"]
+
+    formulario_caixa.tblw.setRowCount(len(itens))
+    formulario_caixa.tblw.setColumnCount(4)
+    formulario_caixa.ProdutoItem.setText("")
+
+    #  Criei um indice para tentar controlar as inserções na tableWidget
+    # Ainda não deu certo omo alternativa vou criar uma inserção em uma tabela
+    # temporaria e mostrar os dados todos de uma vez para o usuário
+    indice = 0
+    for i in range(0, 1):
+        for j in range(0, 1):
+
+            formulario_caixa.tblw.setItem(indice, j, QtWidgets.QTableWidgetItem(str(desc_item)))
+            formulario_caixa.tblw.setItem(indice, j + 2, QtWidgets.QTableWidgetItem(str(desc_preco)))
+            indice += 1
+
+
 
 
 def cadastroProduto():
@@ -266,7 +300,7 @@ formulario_caixa = uic.loadUi("ctrlCaixa.ui")
 menu.actionCadastrar.triggered.connect(mostracadprod)
 menu.actionListProd.triggered.connect(listaProd)
 menu.actionGeraPdf.triggered.connect(gerar_pdf)
-menu.actioncaixa.triggered.connect(selecionaProduto)
+menu.actioncaixa.triggered.connect(abrePedidoCaixa)
 
 formulario.btnCadastrar.clicked.connect(cadastroProduto)
 formulario.btnListar.clicked.connect(listaProd)
@@ -276,7 +310,8 @@ formulario_listprod.btnDel.clicked.connect(excluir_dados)
 formulario_listprod.btnEditar.clicked.connect(edit_dados)
 formulario_editprod.btnSalvarEdit.clicked.connect(salvar)
 formulario_caixa.btnInsere.clicked.connect(insereItem)
-formulario_caixa.btngerar.clicked.connect(preparaItem)
+
+formulario_caixa.btngerar.clicked.connect(digitaItens)
 
 menu.show()
 menu.progressBar.hide()
