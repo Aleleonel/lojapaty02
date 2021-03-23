@@ -2,8 +2,6 @@ from PyQt5 import uic, QtWidgets
 from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
 from PyQt5.QtWidgets import QMessageBox
 
-from datetime import date, datetime
-
 import conexao
 
 from reportlab.pdfgen import canvas
@@ -176,40 +174,86 @@ def tipoOperacao(index):
         print('orçamento')
 
 
+rec = 0
+
+
+def autoIncrement():
+    global rec
+    pStart = 1
+    pInterval = 1
+    if rec == 0:
+        rec = pStart
+    else:
+        rec += pInterval
+    return rec
+
+
 def digitaItens():
     """
-    Essa função armazena os itens digidados e
-    guarda em uma dicionario dentro de uma lista
+    Essa função agora gera uma tabela temporaria em memoria
+    do tipo tabela de pedidos, e retorna os dados lidos para serem
+    utilizados pela função "insereItens()"
     :return:
+        dados_lidos
     """
+    cursor = conexao.banco.cursor()
+    comando_SQL = "CREATE TEMPORARY TABLE IF NOT EXISTS pedidos_temp " \
+                  "(id INT AUTO_INCREMENT PRIMARY KEY," \
+                  "codigo INT NOT NULL," \
+                  "item VARCHAR(100) NOT NULL," \
+                  "quantidade INT," \
+                  "preco FLOAT," \
+                  "sub_total FLOAT," \
+                  "total FLOAT," \
+                  "data DATETIME," \
+                  "id_operacao INT" \
+                  ") ENGINE MEMORY;"
+    cursor.execute(comando_SQL)
+
     cursor = conexao.banco.cursor()
     comando_SQL = "SELECT * FROM produtos"
     cursor.execute(comando_SQL)
     dados_lidos = cursor.fetchall()
 
     itens_pedido = {}
-    item = []
+    item = soma =  []
+    total = 0
+    # DATA DO PEDIDO
+    d = QDate.currentDate()
+    dataAtual = d.toString(Qt.ISODate)
+    data = str(dataAtual)
+    numero = autoIncrement()
+    # for i in range(0, 1000):
+    #     numero += 1
+
     for i in range(len(dados_lidos)):
         if formulario_caixa.ProdutoItem.text() == dados_lidos[i][2]:
-            itens_pedido["item"] = (dados_lidos[i][2])
-            itens_pedido["preco"] = (dados_lidos[i][3])
-            itens_pedido["codigo"] = 20210001
-            item.append(itens_pedido)
+            prec = float(dados_lidos[i][3])
+            quant = int(formulario_caixa.ldquantidade.text())
+            sub_total = (quant * prec)
+            total += sub_total
 
-    # Criar aqui uma tabela temporaria ou inserir diretamente na tabela de pedidos
-    # para depois mostrar na tela os dados inseridos
-    # Uma tabela temporaria deve ser a melhor escolha porque acredito que seja mais
-    # interessante fazer aterações fora da tabela principal
-    codigo = itens_pedido["codigo"] = 20210001
+            cursor = conexao.banco.cursor()
+            comando_SQL = "INSERT INTO pedidos_temp (codigo, item, quantidade, preco," \
+                          "sub_total, Total, data, id_operacao" \
+                          ")" \
+                          "values (%s, %s, %s, %s, %s, %s, %s, %s)"
+            dados = numero, (str(dados_lidos[i][2])), quant, prec, sub_total, total, str(data), 1
+            cursor.execute(comando_SQL, dados)
+            conexao.banco.commit()
+            formulario_caixa.ProdutoItem.setText("")
+            formulario_caixa.ldquantidade.setText("")
+
 
     cursor = conexao.banco.cursor()
-    comando_SQL = "INSERT INTO pedidos (codigo, item, quantidade,preco, sub_total, Total, data, id_operacao)" \
-                  "values (%s, %s, %s, %s, %s, %s, %s, %s)"
-    dados = (int(codigo), str(dados_lidos[i][2]), 12, str(dados_lidos[i][3]), 430.80, 430.80, 20-3-2021, 1)
-    cursor.execute(comando_SQL, dados)
-    conexao.banco.commit()
+    comando_SQL = "SELECT * FROM pedidos_temp"
+    cursor.execute(comando_SQL)
+    dados_lidos = cursor.fetchall()
 
-    return itens_pedido
+    # mostra o resultado da tabela temporaria
+    # print(dados_lidos)
+
+    return dados_lidos
 
 
 def insereItem():
@@ -217,27 +261,27 @@ def insereItem():
     itens = digitaItens()
 
     print(itens)
-    # item = dict(item for item in itens)
-    for k in itens.values():
-        desc_item = itens["item"]
-        desc_preco= itens["preco"]
+
+    for i in range(len(itens)):
+        desc_item = itens[i][2]
+        desc_preco = itens[i][4]
+
+    print(desc_item, desc_preco)
 
     formulario_caixa.tblw.setRowCount(len(itens))
     formulario_caixa.tblw.setColumnCount(4)
-    formulario_caixa.ProdutoItem.setText("")
 
-    #  Criei um indice para tentar controlar as inserções na tableWidget
-    # Ainda não deu certo omo alternativa vou criar uma inserção em uma tabela
-    # temporaria e mostrar os dados todos de uma vez para o usuário
-    indice = 0
-    for i in range(0, 1):
-        for j in range(0, 1):
+    for i in range(0, len(itens)):
+        for j in range(0, 5):
+            formulario_caixa.tblw.setItem(i, j, QtWidgets.QTableWidgetItem(str(itens[i][j])))
 
-            formulario_caixa.tblw.setItem(indice, j, QtWidgets.QTableWidgetItem(str(desc_item)))
-            formulario_caixa.tblw.setItem(indice, j + 2, QtWidgets.QTableWidgetItem(str(desc_preco)))
-            indice += 1
-
-
+    # Copia os dados da tabela temporaria para a tabela original
+    # cursor = conexao.banco.cursor()
+    # comando_SQL = "INSERT INTO pedidos_temp (codigo, item, quantidade, preco, sub_total, Total, data, id_operacao)" \
+    #               "SELECT codigo, item, quantidade, preco, sub_total, Total, data, id_operacao" \
+    #               "FROM pedidos"
+    # cursor.execute(comando_SQL)
+    # conexao.banco.commit()
 
 
 def cadastroProduto():
