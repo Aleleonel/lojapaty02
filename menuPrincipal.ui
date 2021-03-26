@@ -56,7 +56,17 @@
      <addaction name="separator"/>
      <addaction name="separator"/>
     </widget>
+    <widget class="QMenu" name="menuClientes">
+     <property name="title">
+      <string>Clientes</string>
+     </property>
+     <addaction name="separator"/>
+     <addaction name="actionCadastros"/>
+     <addaction name="actionEnderecos"/>
+     <addaction name="actionCadClientes"/>
+    </widget>
     <addaction name="menuProdutos"/>
+    <addaction name="menuClientes"/>
    </widget>
    <widget class="QMenu" name="menuCaixa">
     <property name="title">
@@ -96,6 +106,21 @@
   <action name="actioncaixa">
    <property name="text">
     <string>caixa</string>
+   </property>
+  </action>
+  <action name="actionCadastros">
+   <property name="text">
+    <string>Cadastros</string>
+   </property>
+  </action>
+  <action name="actionEnderecos">
+   <property name="text">
+    <string>Endereços</string>
+   </property>
+  </action>
+  <action name="actionCadClientes">
+   <property name="text">
+    <string>Clientes</string>
    </property>
   </action>
  </widget>

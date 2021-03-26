@@ -1,6 +1,6 @@
 from PyQt5 import uic, QtWidgets
 from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QCompleter
 
 import conexao
 
@@ -215,13 +215,13 @@ def digitaItens():
     cursor.execute(comando_SQL)
     dados_lidos = cursor.fetchall()
 
-    itens_pedido = {}
-    item = soma =  []
     total = 0
+
     # DATA DO PEDIDO
     d = QDate.currentDate()
     dataAtual = d.toString(Qt.ISODate)
     data = str(dataAtual)
+
     numero = autoIncrement()
     # for i in range(0, 1000):
     #     numero += 1
@@ -244,7 +244,6 @@ def digitaItens():
             formulario_caixa.ProdutoItem.setText("")
             formulario_caixa.ldquantidade.setText("")
 
-
     cursor = conexao.banco.cursor()
     comando_SQL = "SELECT * FROM pedidos_temp"
     cursor.execute(comando_SQL)
@@ -257,22 +256,20 @@ def digitaItens():
 
 
 def insereItem():
-    global desc_item, desc_preco
+    """
+        Mostra os itens inseridos no grid
+        e salva na tabela original (fazer ajustes)
+    :return:
+    """
     itens = digitaItens()
 
-    print(itens)
-
-    for i in range(len(itens)):
-        desc_item = itens[i][2]
-        desc_preco = itens[i][4]
-
-    print(desc_item, desc_preco)
+    # print(itens)
 
     formulario_caixa.tblw.setRowCount(len(itens))
-    formulario_caixa.tblw.setColumnCount(4)
+    formulario_caixa.tblw.setColumnCount(7)
 
     for i in range(0, len(itens)):
-        for j in range(0, 5):
+        for j in range(0, 7):
             formulario_caixa.tblw.setItem(i, j, QtWidgets.QTableWidgetItem(str(itens[i][j])))
 
     # Copia os dados da tabela temporaria para a tabela original
@@ -282,6 +279,122 @@ def insereItem():
     #               "FROM pedidos"
     # cursor.execute(comando_SQL)
     # conexao.banco.commit()
+
+
+def abreCadastroCliente():
+    formulario_cadclientes.show()
+
+    # DATA DO CADASTRO
+    d = QDate.currentDate()
+    dataAtual = d.toString(Qt.ISODate)
+    data = str(dataAtual)
+
+    formulario_cadclientes.ldData.setText(data)
+
+    return data
+
+
+def abreCadastroEndereco():
+    formulario_cadenderecos.show()
+
+    # DATA DO CADASTRO
+    d = QDate.currentDate()
+    dataAtual = d.toString(Qt.ISODate)
+    data = str(dataAtual)
+
+    # formulario_cadenderecos.ldData.setText(data)
+
+    return data
+
+
+def cadastrarEndereco():
+    rua = formulario_cadenderecos.ldrua.text()
+    numero = formulario_cadenderecos.ldnumero.text()
+    complemento = formulario_cadenderecos.ldcomplemento.text()
+    bairro = formulario_cadenderecos.ldbairro.text()
+    cidade = formulario_cadenderecos.ldcidade.text()
+    cep = formulario_cadenderecos.ldcep.text()
+    uf = formulario_cadenderecos.ldcep.text()
+
+    cursor = conexao.banco.cursor()
+    comando_SQL = "INSERT INTO endereco (rua, numero, complemento, bairro, cidade, cep, uf) " \
+                  "values (%s, %s, %s, %s, %s,%s, %s)"
+    dados = (rua, numero, complemento, bairro, cidade, cep, uf)
+    cursor.execute(comando_SQL, dados)
+    conexao.banco.commit()
+
+    formulario_cadenderecos.ldrua.setText("")
+    formulario_cadenderecos.ldnumero.setText("")
+    formulario_cadenderecos.ldcomplemento.setText("")
+    formulario_cadenderecos.ldbairro.setText("")
+    formulario_cadenderecos.ldcidade.setText("")
+    formulario_cadenderecos.ldcep.setText("")
+
+
+def cadastrarCliente():
+
+    data = abreCadastroCliente()
+
+    nome = formulario_cadclientes.ldNome.text()
+    cpf = formulario_cadclientes.ldcpf.text()
+    rg = formulario_cadclientes.ldrg.text()
+    email = formulario_cadclientes.ldemail.text()
+    fone1 = formulario_cadclientes.ldfone1.text()
+    fone2 = formulario_cadclientes.ldfone2.text()
+
+    rua = formulario_cadclientes.ldrua.text()
+    numero = formulario_cadclientes.ldnumero.text()
+    complemento = formulario_cadclientes.ldcomplemento.text()
+    bairro = formulario_cadclientes.ldbairro.text()
+    cidade = formulario_cadclientes.ldcidade.text()
+    cep = formulario_cadclientes.ldcep.text()
+    uf = formulario_cadclientes.lduf.text()
+
+    obs = formulario_cadclientes.textEdit.toPlainText()
+
+    print(data, nome, obs)
+
+    cursor = conexao.banco.cursor()
+    comando_SQL = "INSERT INTO clientes (" \
+                  "nome, dt_cadastro, observacao, cpf, rg, fone01, fone02, email, cep, endereco, numero," \
+                  "bairro, complemento, cidade, uf) " \
+                  "values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s)"
+    dados = (str(nome), data, str(obs), cpf, rg, fone1, fone2, email, cep, rua, numero, bairro, complemento, cidade, uf)
+    cursor.execute(comando_SQL, dados)
+    conexao.banco.commit()
+
+    # limpando todos os campos
+    formulario_cadclientes.ldNome.setText("")
+    formulario_cadclientes.ldcpf.setText("")
+    formulario_cadclientes.ldrg.setText("")
+    formulario_cadclientes.ldrg.setText("")
+    formulario_cadclientes.ldfone1.setText("")
+    formulario_cadclientes.ldfone2.setText("")
+
+    formulario_cadclientes.ldrua.setText("")
+    formulario_cadclientes.ldnumero.setText("")
+    formulario_cadclientes.ldcomplemento.setText("")
+    formulario_cadclientes.ldbairro.setText("")
+    formulario_cadclientes.ldcidade.setText("")
+    formulario_cadclientes.ldcep.setText("")
+
+    formulario_cadclientes.textEdit.setText("")
+
+
+def listClientes():
+    formulario_listcli.show()
+
+    cursor = conexao.banco.cursor()
+    comando_SQL = "SELECT * FROM clientes"
+    cursor.execute(comando_SQL)
+    dados_lidos = cursor.fetchall()
+
+    formulario_listcli.tblwclientes.setRowCount(len(dados_lidos))
+    formulario_listcli.tblwclientes.setColumnCount(15)
+
+    for i in range(0, len(dados_lidos)):
+        for j in range(0, 15):
+            formulario_listcli.tblwclientes.setItem(i, j, QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
 
 
 def cadastroProduto():
@@ -338,10 +451,15 @@ app = QtWidgets.QApplication([])
 menu = uic.loadUi("menuPrincipal.ui")
 formulario = uic.loadUi("cadProd.ui")
 formulario_listprod = uic.loadUi("listprod.ui")
+formulario_listcli = uic.loadUi("listCli.ui")
 formulario_editprod = uic.loadUi("editprod.ui")
 formulario_caixa = uic.loadUi("ctrlCaixa.ui")
+formulario_cadclientes = uic.loadUi("cadCli.ui")
+formulario_cadenderecos = uic.loadUi("cadEnd.ui")
 
 menu.actionCadastrar.triggered.connect(mostracadprod)
+menu.actionCadClientes.triggered.connect(abreCadastroCliente)
+menu.actionEnderecos.triggered.connect(abreCadastroEndereco)
 menu.actionListProd.triggered.connect(listaProd)
 menu.actionGeraPdf.triggered.connect(gerar_pdf)
 menu.actioncaixa.triggered.connect(abrePedidoCaixa)
@@ -353,9 +471,13 @@ formulario_listprod.btn_pdf.clicked.connect(gerar_pdf)
 formulario_listprod.btnDel.clicked.connect(excluir_dados)
 formulario_listprod.btnEditar.clicked.connect(edit_dados)
 formulario_editprod.btnSalvarEdit.clicked.connect(salvar)
-formulario_caixa.btnInsere.clicked.connect(insereItem)
 
+formulario_caixa.btnInsere.clicked.connect(insereItem)
 formulario_caixa.btngerar.clicked.connect(digitaItens)
+
+formulario_cadclientes.btnCadastrar.clicked.connect(cadastrarCliente)
+formulario_cadclientes.btnlistar.clicked.connect(listClientes)
+formulario_cadenderecos.btnCadEnder.clicked.connect(cadastrarEndereco)
 
 menu.show()
 menu.progressBar.hide()

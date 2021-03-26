@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>722</width>
+    <height>530</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTableWidget" name="tblwclientes">
+    <property name="geometry">
+     <rect>
+      <x>25</x>
+      <y>31</y>
+      <width>681</width>
+      <height>441</height>
+     </rect>
+    </property>
+    <column>
+     <property name="text">
+      <string>Nome</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Data cadastro</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>observacao</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>CPF</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>RG</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Telefone01</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Telefone02</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>email</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>CEP</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Logradouro</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Número</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Bairro</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Complemento</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Cidade</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>UF</string>
+     </property>
+    </column>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>722</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

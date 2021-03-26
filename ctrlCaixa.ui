@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>560</width>
-    <height>463</height>
+    <width>745</width>
+    <height>553</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <rect>
       <x>20</x>
       <y>30</y>
-      <width>231</width>
+      <width>131</width>
       <height>25</height>
      </rect>
     </property>
@@ -27,9 +27,9 @@
    <widget class="QLineEdit" name="ProdutoItem">
     <property name="geometry">
      <rect>
-      <x>95</x>
+      <x>116</x>
       <y>129</y>
-      <width>231</width>
+      <width>301</width>
       <height>25</height>
      </rect>
     </property>
@@ -38,7 +38,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>409</y>
+      <y>480</y>
       <width>89</width>
       <height>25</height>
      </rect>
@@ -52,18 +52,28 @@
      <rect>
       <x>20</x>
       <y>159</y>
-      <width>521</width>
+      <width>711</width>
       <height>241</height>
      </rect>
     </property>
     <column>
      <property name="text">
-      <string>Item</string>
+      <string>id</string>
      </property>
     </column>
     <column>
      <property name="text">
-      <string>Quant</string>
+      <string>cod.</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>item</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>quant.</string>
      </property>
     </column>
     <column>
@@ -85,7 +95,7 @@
    <widget class="QLineEdit" name="ldquantidade">
     <property name="geometry">
      <rect>
-      <x>330</x>
+      <x>420</x>
       <y>129</y>
       <width>71</width>
       <height>25</height>
@@ -95,8 +105,8 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>10</y>
+      <x>550</x>
+      <y>60</y>
       <width>131</width>
       <height>41</height>
      </rect>
@@ -117,7 +127,7 @@
      <rect>
       <x>20</x>
       <y>129</y>
-      <width>71</width>
+      <width>91</width>
       <height>25</height>
      </rect>
     </property>
@@ -144,8 +154,8 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>102</x>
-      <y>109</y>
+      <x>120</x>
+      <y>110</y>
       <width>220</width>
       <height>17</height>
      </rect>
@@ -163,8 +173,8 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>109</y>
+      <x>420</x>
+      <y>110</y>
       <width>67</width>
       <height>17</height>
      </rect>
@@ -202,7 +212,7 @@
     <property name="geometry">
      <rect>
       <x>120</x>
-      <y>409</y>
+      <y>480</y>
       <width>89</width>
       <height>25</height>
      </rect>
@@ -215,7 +225,7 @@
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>409</y>
+      <y>480</y>
       <width>89</width>
       <height>25</height>
      </rect>
@@ -228,7 +238,7 @@
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>409</y>
+      <y>480</y>
       <width>89</width>
       <height>25</height>
      </rect>
@@ -241,7 +251,7 @@
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>409</y>
+      <y>480</y>
       <width>89</width>
       <height>25</height>
      </rect>
@@ -253,8 +263,8 @@
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>60</y>
+      <x>640</x>
+      <y>110</y>
       <width>80</width>
       <height>17</height>
      </rect>
@@ -272,8 +282,8 @@
    <widget class="QLineEdit" name="dtEdit">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>80</y>
+      <x>640</x>
+      <y>130</y>
       <width>91</width>
       <height>25</height>
      </rect>
@@ -282,14 +292,75 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox2">
+   <widget class="QLineEdit" name="ProdutoItem_2">
     <property name="geometry">
      <rect>
-      <x>120</x>
+      <x>115</x>
       <y>80</y>
-      <width>231</width>
+      <width>301</width>
       <height>25</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="ld_codProduto_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>80</y>
+      <width>91</width>
+      <height>25</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>60</y>
+      <width>91</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Cod. Cliente.</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="dtEdit_2">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>410</y>
+      <width>101</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>117</x>
+      <y>59</y>
+      <width>220</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Nome do Cliente</string>
     </property>
    </widget>
   </widget>
@@ -298,7 +369,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>560</width>
+     <width>745</width>
      <height>22</height>
     </rect>
    </property>
